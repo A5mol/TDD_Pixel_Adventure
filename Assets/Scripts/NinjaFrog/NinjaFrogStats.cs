@@ -8,14 +8,21 @@ public class NinjaFrogStats
     public float speed = 5f;        
     public float jumpForce = 10f;    
     public int attackPower = 1;
-    public int currentLives = 3;
-
+    public int currentLives;
     public int attackRange = 1;
 
-    public int energia = 50;
+    public int energy;
+    public int maxEnergy;
+    
 
     //Valor entre 0 y 1
     public float reduccionDeDano = 0.5f;
+
+    public NinjaFrogStats()
+    {
+        currentLives = maxLives;
+        energy = maxEnergy;
+    }
 
     public bool CanAttack(int attackPower, int attackRange)
     {
@@ -29,13 +36,13 @@ public class NinjaFrogStats
     //Devuelve la cantidad de vida que perdemos al dar un puñetazo con intensidad “fuerza”
     public int darPuñetazo(int fuerza)
     {
-        return (int)(fuerza*reduccionDeDano);
+        return Mathf.Max(fuerza - attackPower, 0);;
     }
 
     //Devuelve true si en la pelea con ”p2”; resulto ganador. Falso en otro caso. Ganará quien tenga más fuerza
-    bool peleaCon(NinjaFrogStats p2)
+    public bool peleaCon(NinjaFrogStats p2)
     {
-        return p2.maxLives/(attackPower*p2.reduccionDeDano) > maxLives/(p2.attackPower*reduccionDeDano);
+        return attackPower>p2.attackPower;
     }
 
     //Devuelve la fuerza de un personaje. No puede haber fuerzas negativas.
@@ -45,15 +52,22 @@ public class NinjaFrogStats
     }
     
     //Devuelve true si estas vivo. False en otro caso. El personaje estará vivo si tiene fuerza (fuerza  > 0) 
-    bool estaVivo()
+    public bool estaVivo()
     {
         return currentLives > 0;
     }
     
     // Devuelve true si tiene al menos 50 puntos de energía.
-    bool PuedeHacerAtaqueEspecial()
+    public bool PuedeHacerAtaqueEspecial()
     {
-        return energia >= 50;
+        const int energiaRequerida = 50;
+        if (energy >= energiaRequerida)
+        {
+            // Consumo de energía al hacer el ataque especial
+            energy -= energiaRequerida;
+            return true;
+        }
+        return false;
     }
 
 }
